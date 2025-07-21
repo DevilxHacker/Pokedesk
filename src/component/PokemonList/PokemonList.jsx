@@ -2,6 +2,30 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+function getBgColor(types) {
+  const typeColors = {
+  fire: "bg-red-200",
+  water: "bg-blue-200",
+  grass: "bg-green-200",
+  electric: "bg-yellow-200",
+  psychic: "bg-pink-200",
+  ice: "bg-cyan-200",
+  dragon: "bg-purple-300",
+  dark: "bg-gray-600",
+  fairy: "bg-pink-100",
+  normal: "bg-gray-200",
+  fighting: "bg-orange-200",
+  ground: "bg-yellow-300",
+  rock: "bg-stone-300",
+  bug: "bg-lime-200",
+  ghost: "bg-indigo-300",
+  poison: "bg-purple-200",
+  steel: "bg-gray-300",
+  flying: "bg-sky-200",
+  };
+  return typeColors[types[0]] || typeColors.default;
+}
+
 function PokemonList() {
     const [pokemonList, setPokemonList] = useState([]);
     const [currentPage, setCurrentPage] = useState('https://pokeapi.co/api/v2/pokemon');
@@ -9,7 +33,6 @@ function PokemonList() {
     const [previous, setPrevious] = useState(null);
     async function fetchPokemonList() {
         const result = await axios.get(currentPage);
-        console.log(result.data);
         setNext(result.data.next);
         setPrevious(result.data.previous);
         const pokemonList = result.data.results;
@@ -21,30 +44,55 @@ function PokemonList() {
             name: detail.data.name,
             id: detail.data.id,
             image: detail.data.sprites.front_default,
-            
+            types: detail.data.types.map(t => t.type.name),
         }));
         setPokemonList(pokemonData);
-        console.log(pokemonData);
     }
     useEffect(() => {
         fetchPokemonList();
         // eslint-disable-next-line
     }, [currentPage]);
-    
+
     return (
-        <div>
-            <h1>Pokemon List</h1>
-            <button onClick={() => next && setCurrentPage(next)} disabled={!next}>Next</button>
-            <button onClick={() => previous && setCurrentPage(previous)} disabled={!previous}>Previous</button>
-            {pokemonList.map(pokemon => (
-                <Link to={`/pokemon/${pokemon.name}`}>
-                <div key={pokemon.id}>
-                    <h2>{pokemon.name}</h2>
-                    <img src={pokemon.image} alt={pokemon.name} />
-                </div>
-                    </Link> 
-            ))}
-        </div>
+        <div className={`max-w-6xl p-4 mx-auto  `}>
+
+  <div className="flex justify-center gap-4 mb-6">
+    <button
+      onClick={() => previous && setCurrentPage(previous)}
+      disabled={!previous}
+      className="px-4 py-2 bg-gray-200 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50"
+    >
+      Previous
+    </button>
+    <button
+      onClick={() => next && setCurrentPage(next)}
+      disabled={!next}
+      className="px-4 py-2 bg-gray-200 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+
+  <div className={`grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  `}>
+    {pokemonList.map((pokemon) => (
+      <Link
+        key={pokemon.id}
+        to={`/pokemon/${pokemon.name}`}
+        className={`flex flex-col items-center p-4 transition shadow rounded-xl hover:shadow-lg ${getBgColor(pokemon.types)} shadow-lg rounded-xl`}
+      >
+        <img
+          src={pokemon.image}
+          alt={pokemon.name}
+          className="object-contain w-24 h-24 mb-2"
+        />
+        <h2 className="text-lg font-semibold text-gray-800 capitalize">
+          {pokemon.name}
+        </h2>
+      </Link>
+    ))}
+  </div>
+</div>
+
     );
 }
 
