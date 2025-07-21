@@ -1,30 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getBgColor } from "../Functions/BackGroundColor";
 
-function getBgColor(types) {
-  const typeColors = {
-  fire: "bg-red-200",
-  water: "bg-blue-200",
-  grass: "bg-green-200",
-  electric: "bg-yellow-200",
-  psychic: "bg-pink-200",
-  ice: "bg-cyan-200",
-  dragon: "bg-purple-300",
-  dark: "bg-gray-600",
-  fairy: "bg-pink-100",
-  normal: "bg-gray-200",
-  fighting: "bg-orange-200",
-  ground: "bg-yellow-300",
-  rock: "bg-stone-300",
-  bug: "bg-lime-200",
-  ghost: "bg-indigo-300",
-  poison: "bg-purple-200",
-  steel: "bg-gray-300",
-  flying: "bg-sky-200",
-  };
-  return typeColors[types[0]] || typeColors.default;
-}
 
 function PokemonList() {
     const [pokemonList, setPokemonList] = useState([]);
@@ -81,9 +59,9 @@ function PokemonList() {
         className={`flex flex-col items-center p-4 transition shadow rounded-xl hover:shadow-lg ${getBgColor(pokemon.types)} shadow-lg rounded-xl`}
       >
         <img
-          src={pokemon.image}
+          src={pokemon.image }
           alt={pokemon.name}
-          className="object-contain w-24 h-24 mb-2"
+          className="object-contain w-28 h-32 min-w-[100px] min-h-[120px] max-w-[160px] max-h-[180px] mb-2"
         />
         <h2 className="text-lg font-semibold text-gray-800 capitalize">
           {pokemon.name}

@@ -1,32 +1,16 @@
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getBgColor } from "../Functions/BackGroundColor";
+import Header from "../Header/Header";
+import Search from "../Search/Search";
 
-const typeColors = {
-  fire: "bg-red-200",
-  water: "bg-blue-200",
-  grass: "bg-green-200",
-  electric: "bg-yellow-200",
-  psychic: "bg-pink-200",
-  ice: "bg-cyan-200",
-  dragon: "bg-purple-300",
-  dark: "bg-gray-600",
-  fairy: "bg-pink-100",
-  normal: "bg-gray-200",
-  fighting: "bg-orange-200",
-  ground: "bg-yellow-300",
-  rock: "bg-stone-300",
-  bug: "bg-lime-200",
-  ghost: "bg-indigo-300",
-  poison: "bg-purple-200",
-  steel: "bg-gray-300",
-  flying: "bg-sky-200",
-};
 
-function Pokemon() {
+function Pokemon({setSearchTerm, searchTerm}) {
   const [pokemon, setPokemon] = useState(null);
   const { name } = useParams();
-  const url = "https://pokeapi.co/api/v2/pokemon/" + name;
+  const url = "https://pokeapi.co/api/v2/pokemon/" + (searchTerm? searchTerm:name);
+
 
   async function fetchPokemonData() {
     const result = await axios.get(url);
@@ -45,20 +29,29 @@ function Pokemon() {
       
     fetchPokemonData();
     // eslint-disable-next-line
-  }, []);
-const bgColor = pokemon ? typeColors[pokemon.types[0]] || "bg-gray-200" : "bg-gray-200";
+  }, [searchTerm, name]);
   return (
     <>
+     {!searchTerm && <div className="flex flex-col gap-6 p-4 bg-gray-50">
+
+  {!searchTerm && <header className="text-center">
+    <Header />
+  </header>}
+
+  {!searchTerm && <div className="w-full max-w-lg mx-auto">
+    <Search updateSearchTerm={setSearchTerm}/>
+  </div>}
+  </div>}
     
         <div className={`p-4 rounded-xl shadow hover:shadow-lg transition bg-orange-200`}>
       <h1 className="my-6 text-3xl font-bold text-center">
-        <Link to="/" className="text-red-500 transition hover:text-red-700">
-          Pokedex
+        <Link to="/"    className="text-red-500 transition hover:text-red-700" onClick={()=>setSearchTerm('')}>
+          ← Back to List
         </Link>
       </h1>
 
       {pokemon && (
-        <div className={`flex flex-col items-center max-w-md gap-4 p-6 mx-auto ${bgColor} shadow-lg rounded-xl sm:max-w-lg md:max-w-xl`}>
+        <div className={`flex flex-col items-center max-w-md gap-4 p-6 mx-auto ${getBgColor(pokemon.types)} shadow-lg rounded-xl sm:max-w-lg md:max-w-xl`}>
           <div className="text-2xl font-semibold text-gray-800 capitalize">
             {pokemon.name}
           </div>
